@@ -556,6 +556,63 @@ h1 {
   font-weight: 300;
 }
 
+/* CLI Section */
+.cli {
+  padding: 100px 0;
+}
+
+.cli h2 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 12px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.cli-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 56px;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+.cli-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.cli-command {
+  background: var(--bg-code);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.cli-command-header {
+  margin-bottom: 12px;
+}
+
+.cli-command-header code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  color: #50fa7b;
+}
+
+.cli-command p {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .cli-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Footer */
 footer {
   padding: 40px 0;
