@@ -1,0 +1,44 @@
+{
+  "name": "@arach/og",
+  "version": "0.1.0",
+  "description": "Declarative OG image generation with Puppeteer",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "og": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node --test src/**/*.test.ts",
+    "prepublishOnly": "pnpm build"
+  },
+  "keywords": [
+    "og",
+    "opengraph",
+    "social",
+    "image",
+    "puppeteer",
+    "generator"
+  ],
+  "author": "Arach",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^24.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
