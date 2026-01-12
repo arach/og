@@ -21,7 +21,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/style.css">
 </head>
@@ -38,34 +38,36 @@
           <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           GitHub
         </a>
+        <button id="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
       </nav>
     </div>
   </header>
 
   <main>
     <section class="hero">
-      <div class="container">
-        <span class="hero-tag">Open Source</span>
-        <h1>Beautiful OG images with zero design effort</h1>
-        <p class="hero-subtitle">Declarative templates, Puppeteer-powered rendering. Generate stunning social cards in seconds.</p>
-        <div class="hero-actions">
-          <a href="https://github.com/arach/og" class="btn btn-primary">View on GitHub</a>
-          <a href="#templates" class="btn btn-secondary">See Templates</a>
+      <div class="container hero-layout">
+        <div class="hero-content">
+          <h1>Beautiful OG images with <em>zero</em> design effort.</h1>
+          <p class="hero-subtitle">Declarative templates, Puppeteer-powered rendering. Generate stunning social cards in seconds.</p>
+          <div class="hero-actions">
+            <a href="https://github.com/arach/og" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              Star on GitHub
+            </a>
+          </div>
         </div>
-        <div class="install">
-          <span class="install-prompt">$</span>
-          <code>pnpm add @arach/og</code>
-          <button class="install-copy" onclick="navigator.clipboard.writeText('pnpm add @arach/og')" title="Copy">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <section class="code-section">
-      <div class="container">
-        <h2>Simple by design</h2>
-        <div class="code-block">
+        <div class="hero-visual">
+          <div class="code-block-wrapper">
+            <div class="window-header">
+              <div class="window-controls">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="window-title">og.ts</div>
+            </div>
+            <div class="code-block">
 <pre><span class="kw">import</span> { <span class="fn">generateOG</span> } <span class="kw">from</span> <span class="str">'@arach/og'</span>
 
 <span class="kw">await</span> <span class="fn">generateOG</span>({
@@ -75,9 +77,41 @@
   <span class="prop">accent</span>: <span class="str">'#f07c4f'</span>,
   <span class="prop">output</span>: <span class="str">'public/og.png'</span>
 })</pre>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+
+    <div class="section-divider"></div>
+
+    <section class="quick-start">
+      <div class="container">
+        <div class="quick-start-content">
+          <div class="qs-text">
+            <h2>Get started in seconds</h2>
+            <p>Install the package and start generating images with your favorite framework.</p>
+          </div>
+          <div class="install-wrapper">
+            <div class="install-tabs">
+              <button class="install-tab active" data-pm="pnpm">pnpm</button>
+              <button class="install-tab" data-pm="npm">npm</button>
+              <button class="install-tab" data-pm="yarn">yarn</button>
+              <button class="install-tab" data-pm="bun">bun</button>
+            </div>
+            <div class="install">
+              <span class="install-prompt">$</span>
+              <code id="install-cmd">pnpm add @arach/og</code>
+              <button class="install-copy" title="Copy command">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
 
     <section class="templates" id="templates">
       <div class="container">
@@ -85,36 +119,66 @@
         <p class="templates-subtitle">Four beautiful templates out of the box. Or create your own.</p>
         <div class="templates-grid">
           <div class="template-card">
-            <img src="/examples/og-branded.png" alt="Branded template">
+            <div class="card-image-wrapper">
+              <img src="/examples/og-branded.png" alt="Branded template">
+            </div>
             <div class="template-info">
-              <div class="template-name">branded</div>
+              <div class="template-header">
+                <div class="template-name">branded</div>
+                <button class="copy-template-id" data-id="branded" title="Copy ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                </button>
+              </div>
               <div class="template-desc">Full-featured with gradient glows and grid overlay</div>
             </div>
           </div>
           <div class="template-card">
-            <img src="/examples/og-minimal.png" alt="Minimal template">
+            <div class="card-image-wrapper">
+              <img src="/examples/og-minimal.png" alt="Minimal template">
+            </div>
             <div class="template-info">
-              <div class="template-name">minimal</div>
+              <div class="template-header">
+                <div class="template-name">minimal</div>
+                <button class="copy-template-id" data-id="minimal" title="Copy ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                </button>
+              </div>
               <div class="template-desc">Clean and centered, perfect for simple projects</div>
             </div>
           </div>
           <div class="template-card">
-            <img src="/examples/og-docs.png" alt="Docs template">
+            <div class="card-image-wrapper">
+              <img src="/examples/og-docs.png" alt="Docs template">
+            </div>
             <div class="template-info">
-              <div class="template-name">docs</div>
+              <div class="template-header">
+                <div class="template-name">docs</div>
+                <button class="copy-template-id" data-id="docs" title="Copy ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                </button>
+              </div>
               <div class="template-desc">Designed for documentation pages</div>
             </div>
           </div>
           <div class="template-card">
-            <img src="/examples/og-editor.png" alt="Editor Dark template">
+            <div class="card-image-wrapper">
+              <img src="/examples/og-editor.png" alt="Editor Dark template">
+            </div>
             <div class="template-info">
-              <div class="template-name">editor-dark</div>
+              <div class="template-header">
+                <div class="template-name">editor-dark</div>
+                <button class="copy-template-id" data-id="editor-dark" title="Copy ID">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                </button>
+              </div>
               <div class="template-desc">Dark theme for products and apps</div>
             </div>
           </div>
         </div>
       </div>
     </section>
+
+    <div class="section-divider"></div>
 
     <section class="features">
       <div class="container">
@@ -153,5 +217,6 @@
       <p>Made by <a href="https://arach.io">Arach</a>. MIT Licensed.</p>
     </div>
   </footer>
+  <script type="module" src="/main.js"></script>
 </body>
 </html>
