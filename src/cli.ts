@@ -3,41 +3,42 @@
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { generateOG, generateOGBatch } from './generate.js'
+import { validateOG, formatValidationResult } from './validate.js'
 import type { OGConfig } from './types.js'
 
 async function main() {
   const args = process.argv.slice(2)
 
   if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
-    console.log(`
-@arach/og - Declarative OG image generation
-
-Usage:
-  og <config.json>     Generate OG images from a config file
-  og --help            Show this help message
-
-Config file format:
-  Single image:
-  {
-    "template": "branded",
-    "title": "My App",
-    "subtitle": "Do amazing things",
-    "accent": "#f07c4f",
-    "output": "public/og-image.png"
-  }
-
-  Multiple images:
-  [
-    { "title": "Home", "output": "public/og-home.png" },
-    { "title": "Docs", "template": "docs", "output": "public/og-docs.png" }
-  ]
-
-Templates: branded, docs, minimal, editor-dark
-`)
+    printHelp()
     process.exit(0)
   }
 
-  const configPath = resolve(process.cwd(), args[0])
+  const command = args[0]
+
+  // Validate command
+  if (command === 'validate') {
+    const url = args[1]
+    if (!url) {
+      console.error('Error: Please provide a URL to validate')
+      console.error('Usage: og validate <url>')
+      process.exit(1)
+    }
+
+    try {
+      const targetUrl = url.startsWith('http') ? url : `https://${url}`
+      console.log(`\nValidating ${targetUrl}...`)
+      const result = await validateOG(targetUrl)
+      console.log(formatValidationResult(result))
+      process.exit(result.score >= 70 ? 0 : 1)
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : error)
+      process.exit(1)
+    }
+  }
+
+  // Generate command (default)
+  const configPath = resolve(process.cwd(), command)
 
   try {
     const content = await readFile(configPath, 'utf-8')
@@ -54,6 +55,49 @@ Templates: branded, docs, minimal, editor-dark
     console.error('Error:', error instanceof Error ? error.message : error)
     process.exit(1)
   }
+}
+
+function printHelp() {
+  console.log(`
+@arach/og - Declarative OG image generation
+
+Usage:
+  og <config.json>        Generate OG images from a config file
+  og validate <url>       Validate OG tags on a website
+  og --help               Show this help message
+
+Validate:
+  Check a website's Open Graph tags and image for best practices.
+
+  $ og validate https://example.com
+  $ og validate example.com
+
+  Checks:
+    • og:title length (optimal: 50-60 chars)
+    • og:description length (optimal: 110-160 chars)
+    • og:image accessible, dimensions (1200x630), size (<600KB)
+    • og:url and twitter:card presence
+
+Generate:
+  Create OG images from a JSON config file.
+
+  Single image:
+  {
+    "template": "branded",
+    "title": "My App",
+    "subtitle": "Do amazing things",
+    "accent": "#f07c4f",
+    "output": "public/og.png"
+  }
+
+  Multiple images:
+  [
+    { "title": "Home", "output": "public/og-home.png" },
+    { "title": "Docs", "template": "docs", "output": "public/og-docs.png" }
+  ]
+
+Templates: branded, docs, minimal, editor-dark
+`)
 }
 
 main()

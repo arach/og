@@ -1,3 +1,5 @@
 export { generateOG, generateOGBatch } from './generate.js'
+export { validateOG, formatValidationResult } from './validate.js'
 export { templates } from './templates/index.js'
 export type { OGConfig, TemplateId, TemplateContext, TemplateFunction } from './types.js'
+export type { ValidationResult, ValidationCheck } from './validate.js'
