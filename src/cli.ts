@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { generateOG, generateOGBatch } from './generate.js'
 import { validateOG, formatValidationResult } from './validate.js'
+import { startViewer } from './viewer.js'
 import type { OGConfig } from './types.js'
 
 async function main() {
@@ -37,6 +38,14 @@ async function main() {
     }
   }
 
+  // Viewer command
+  if (command === 'viewer') {
+    const dir = args[1] ? resolve(process.cwd(), args[1]) : process.cwd()
+    const port = args.includes('--port') ? parseInt(args[args.indexOf('--port') + 1]) : 3333
+    await startViewer(dir, port)
+    return
+  }
+
   // Generate command (default)
   const configPath = resolve(process.cwd(), command)
 
@@ -64,6 +73,7 @@ function printHelp() {
 Usage:
   og <config.json>        Generate OG images from a config file
   og validate <url>       Validate OG tags on a website
+  og viewer [dir]         Launch local viewer for OG images
   og --help               Show this help message
 
 Validate:
@@ -77,6 +87,13 @@ Validate:
     • og:description length (optimal: 110-160 chars)
     • og:image accessible, dimensions (1200x630), size (<600KB)
     • og:url and twitter:card presence
+
+Viewer:
+  Open a local viewer to preview OG images in your project.
+
+  $ og viewer              # Scan current directory
+  $ og viewer ./public     # Scan specific directory
+  $ og viewer --port 4000  # Use custom port
 
 Generate:
   Create OG images from a JSON config file.
