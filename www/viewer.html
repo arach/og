@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OG Template Viewer | @arach/og</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf9f7;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #e5e2dd;
+      --accent: #c45e3e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 60px 40px;
+    }
+
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 60px;
+    }
+
+    .header h1 {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 3rem;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .viewer {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .template-section {
+      margin-bottom: 80px;
+    }
+
+    .template-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .template-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.25rem;
+      font-weight: 400;
+    }
+
+    .template-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .preview-container {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    }
+
+    .preview-image {
+      width: 100%;
+      display: block;
+      aspect-ratio: 1200/630;
+      object-fit: cover;
+    }
+
+    .preview-meta {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+    }
+
+    .preview-info {
+      display: flex;
+      gap: 24px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .preview-info span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn {
+      background: var(--text);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .copy-btn:hover {
+      opacity: 0.8;
+    }
+
+    .social-preview {
+      margin-top: 32px;
+    }
+
+    .social-preview h3 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .social-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .social-card-header {
+      padding: 12px 16px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .social-card img {
+      width: 100%;
+      display: block;
+    }
+
+    .social-card-meta {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .social-card-meta .domain {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .social-card-meta .title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 900px) {
+      .social-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Template Viewer</h1>
+    <p>Preview all OG image templates and see how they appear on social platforms.</p>
+  </div>
+
+  <div class="viewer">
+    <div class="template-section">
+      <div class="template-header">
+        <span class="template-name">branded</span>
+        <span class="template-desc">Full-featured with corner crosses, grid overlay, and gradient accent bar</span>
+      </div>
+      <div class="preview-container">
+        <img class="preview-image" src="/examples/og-branded.png" alt="Branded template">
+        <div class="preview-meta">
+          <div class="preview-info">
+            <span>1200 x 630</span>
+            <span>PNG</span>
+          </div>
+          <button class="copy-btn" onclick="copyConfig('branded')">Copy Config</button>
+        </div>
+      </div>
+      <div class="social-preview">
+        <h3>Social Preview</h3>
+        <div class="social-grid">
+          <div class="social-card">
+            <div class="social-card-header">Twitter / X</div>
+            <img src="/examples/og-branded.png" alt="Twitter preview">
+            <div class="social-card-meta">
+              <div class="domain">example.com</div>
+              <div class="title">Arc - Design architecture diagrams visually</div>
+            </div>
+          </div>
+          <div class="social-card">
+            <div class="social-card-header">LinkedIn</div>
+            <img src="/examples/og-branded.png" alt="LinkedIn preview">
+            <div class="social-card-meta">
+              <div class="domain">example.com</div>
+              <div class="title">Arc - Design architecture diagrams visually</div>
+            </div>
+          </div>
+          <div class="social-card">
+            <div class="social-card-header">Discord</div>
+            <img src="/examples/og-branded.png" alt="Discord preview">
+            <div class="social-card-meta">
+              <div class="domain">example.com</div>
+              <div class="title">Arc - Design architecture diagrams visually</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-section">
+      <div class="template-header">
+        <span class="template-name">minimal</span>
+        <span class="template-desc">Clean and centered, perfect for simple projects</span>
+      </div>
+      <div class="preview-container">
+        <img class="preview-image" src="/examples/og-minimal.png" alt="Minimal template">
+        <div class="preview-meta">
+          <div class="preview-info">
+            <span>1200 x 630</span>
+            <span>PNG</span>
+          </div>
+          <button class="copy-btn" onclick="copyConfig('minimal')">Copy Config</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-section">
+      <div class="template-header">
+        <span class="template-name">docs</span>
+        <span class="template-desc">Designed for documentation pages</span>
+      </div>
+      <div class="preview-container">
+        <img class="preview-image" src="/examples/og-docs.png" alt="Docs template">
+        <div class="preview-meta">
+          <div class="preview-info">
+            <span>1200 x 630</span>
+            <span>PNG</span>
+          </div>
+          <button class="copy-btn" onclick="copyConfig('docs')">Copy Config</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="template-section">
+      <div class="template-header">
+        <span class="template-name">editor-dark</span>
+        <span class="template-desc">Dark theme for products and apps</span>
+      </div>
+      <div class="preview-container">
+        <img class="preview-image" src="/examples/og-editor.png" alt="Editor Dark template">
+        <div class="preview-meta">
+          <div class="preview-info">
+            <span>1200 x 630</span>
+            <span>PNG</span>
+          </div>
+          <button class="copy-btn" onclick="copyConfig('editor-dark')">Copy Config</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const configs = {
+      branded: {
+        template: 'branded',
+        title: 'Your Title',
+        subtitle: 'Your subtitle or description goes here',
+        tag: 'Open Source',
+        accent: '#c45e3e',
+        fonts: ['Instrument Serif:ital@1', 'Inter:wght@400;500'],
+        output: 'public/og.png'
+      },
+      minimal: {
+        template: 'minimal',
+        title: 'Your Title',
+        subtitle: 'Your subtitle',
+        accent: '#c45e3e',
+        output: 'public/og.png'
+      },
+      docs: {
+        template: 'docs',
+        title: 'Documentation Title',
+        subtitle: 'A brief description of this page',
+        accent: '#c45e3e',
+        output: 'public/og.png'
+      },
+      'editor-dark': {
+        template: 'editor-dark',
+        title: 'Product Name',
+        subtitle: 'Product tagline or description',
+        tag: 'v1.0.0',
+        accent: '#c45e3e',
+        output: 'public/og.png'
+      }
+    };
+
+    function copyConfig(template) {
+      const config = JSON.stringify(configs[template], null, 2);
+      navigator.clipboard.writeText(config);
+
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = originalText, 1500);
+    }
+  </script>
+</body>
+</html>

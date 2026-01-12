@@ -1,32 +1,41 @@
 [
   {
     "template": "branded",
-    "title": "Arc | Visual Diagram Editor",
+    "title": "Arc",
     "subtitle": "Design architecture diagrams visually. Export to TypeScript or JSON.",
-    "accent": "#f07c4f",
+    "accent": "#c45e3e",
+    "accentSecondary": "#8b5a3c",
     "tag": "Open Source",
+    "fonts": ["Instrument Serif:ital@1", "Inter:wght@400;500"],
+    "scale": 1,
     "output": "examples/og-branded.png"
   },
   {
     "template": "docs",
     "title": "Quickstart Guide",
     "subtitle": "Get up and running with Arc in under 5 minutes",
-    "accent": "#f07c4f",
+    "accent": "#c45e3e",
+    "fonts": ["Instrument Serif:ital@1", "Inter:wght@400;500"],
+    "scale": 1,
     "output": "examples/og-docs.png"
   },
   {
     "template": "minimal",
     "title": "Arc",
     "subtitle": "Architecture diagrams that live in your codebase",
-    "accent": "#f07c4f",
+    "accent": "#c45e3e",
+    "fonts": ["Instrument Serif:ital@1", "Inter:wght@400;500"],
+    "scale": 1,
     "output": "examples/og-minimal.png"
   },
   {
     "template": "editor-dark",
     "title": "Arc Editor",
     "subtitle": "Visual diagram editing with real-time preview",
-    "accent": "#f07c4f",
+    "accent": "#c45e3e",
     "tag": "v0.1.0",
+    "fonts": ["Instrument Serif:ital@1", "Inter:wght@400;500"],
+    "scale": 1,
     "output": "examples/og-editor.png"
   }
 ]
