@@ -6,5 +6,6 @@
   "accent": "#f07c4f",
   "accentSecondary": "#d4a574",
   "background": "#faf8f5",
+  "scale": 1,
   "output": "www/public/og.png"
 }
