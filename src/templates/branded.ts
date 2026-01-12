@@ -1,7 +1,7 @@
 import type { TemplateFunction } from '../types.js'
 
 /**
- * Branded template - full featured with grid overlay, gradient glows, and tag
+ * Branded template - full featured with grid overlay, corner crosses, and refined typography
  */
 export const branded: TemplateFunction = (ctx) => `
 <!DOCTYPE html>
@@ -26,30 +26,42 @@ export const branded: TemplateFunction = (ctx) => `
       position: relative;
       overflow: hidden;
     }
-    .glow {
-      position: absolute;
-      inset: -10% -10% auto -10%;
-      height: 520px;
-      background:
-        radial-gradient(circle at 15% 35%, ${ctx.accent}40, transparent 58%),
-        radial-gradient(circle at 70% 0%, ${ctx.accentSecondary}38, transparent 65%),
-        radial-gradient(circle at 85% 40%, ${ctx.accent}30, transparent 55%);
-      pointer-events: none;
-    }
     .grid {
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(${ctx.textColor}08 1px, transparent 1px),
-        linear-gradient(90deg, ${ctx.textColor}08 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.5;
+        linear-gradient(${ctx.textColor}06 1px, transparent 1px),
+        linear-gradient(90deg, ${ctx.textColor}06 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .grid-small {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(${ctx.textColor}03 1px, transparent 1px),
+        linear-gradient(90deg, ${ctx.textColor}03 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .corner-cross {
+      position: absolute;
+      stroke: ${ctx.accent};
+      stroke-width: 1;
+      stroke-dasharray: 6 4;
+      opacity: 0.7;
+    }
+    .corner-tl {
+      top: 0;
+      left: 0;
+    }
+    .corner-br {
+      bottom: 0;
+      right: 0;
     }
     .content {
       position: relative;
       z-index: 1;
       height: 100%;
-      padding: 72px 80px;
+      padding: 80px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -58,57 +70,82 @@ export const branded: TemplateFunction = (ctx) => `
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: 1px solid ${ctx.textColor}20;
-      background: ${ctx.background}cc;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid ${ctx.accent}30;
+      background: ${ctx.accent}10;
+      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: ${ctx.accentSecondary};
-      margin-bottom: 28px;
+      letter-spacing: 0.12em;
+      color: ${ctx.accent};
+      margin-bottom: 32px;
       width: fit-content;
     }
     .title {
       font-family: '${ctx.fonts[0]}', serif;
-      font-size: 72px;
-      font-weight: 600;
-      line-height: 1.1;
+      font-size: 80px;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.05;
       max-width: 900px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
     }
     .subtitle {
-      font-size: 28px;
-      color: ${ctx.textColor}99;
-      max-width: 700px;
-      line-height: 1.4;
+      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: ${ctx.textColor}80;
+      max-width: 650px;
+      line-height: 1.5;
     }
     .brand {
       position: absolute;
-      bottom: 72px;
+      bottom: 80px;
       left: 80px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
     .brand-dot {
-      width: 16px;
-      height: 16px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: ${ctx.accent};
-      box-shadow: 0 0 0 6px ${ctx.accent}33;
     }
     .brand-name {
-      font-family: '${ctx.fonts[0]}', serif;
-      font-size: 24px;
-      font-weight: 600;
+      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      color: ${ctx.textColor}90;
+    }
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, ${ctx.accent}, ${ctx.accentSecondary || ctx.accent}80);
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
-  <div class="glow"></div>
   <div class="grid"></div>
+  <div class="grid-small"></div>
+
+  <!-- Corner crosses -->
+  <svg class="corner-cross corner-tl" width="200" height="200" viewBox="0 0 200 200">
+    <path d="M 20 60 L 140 60" fill="none"/>
+    <path d="M 60 20 L 60 140" fill="none"/>
+  </svg>
+  <svg class="corner-cross corner-br" width="200" height="200" viewBox="0 0 200 200">
+    <path d="M 60 140 L 180 140" fill="none"/>
+    <path d="M 140 60 L 140 180" fill="none"/>
+  </svg>
+
   <div class="content">
     ${ctx.tag ? `<div class="tag">${ctx.tag}</div>` : ''}
     <h1 class="title">${ctx.title}</h1>
@@ -118,6 +155,7 @@ export const branded: TemplateFunction = (ctx) => `
     <span class="brand-dot"></span>
     <span class="brand-name">${ctx.title.split('|')[0]?.trim() || ''}</span>
   </div>
+  <div class="bottom-bar"></div>
 </body>
 </html>
 `
