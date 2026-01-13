@@ -18,6 +18,63 @@ interface ImageInfo {
   name: string
   size: number
   url: string
+  width?: number
+  height?: number
+}
+
+async function getImageDimensions(filePath: string): Promise<{ width: number; height: number } | null> {
+  try {
+    const { createReadStream } = await import('node:fs')
+
+    return new Promise((resolve) => {
+      const stream = createReadStream(filePath, { start: 0, end: 29 })
+      let data = Buffer.alloc(0)
+
+      stream.on('data', (chunk) => {
+        data = Buffer.concat([data, Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)])
+      })
+
+      stream.on('end', () => {
+        // PNG: width at bytes 16-19, height at 20-23
+        if (data[0] === 0x89 && data[1] === 0x50 && data[2] === 0x4E && data[3] === 0x47) {
+          const width = data.readUInt32BE(16)
+          const height = data.readUInt32BE(20)
+          resolve({ width, height })
+          return
+        }
+
+        // JPEG: Need to parse markers - just return null for now, we'll check by name
+        resolve(null)
+      })
+
+      stream.on('error', () => resolve(null))
+    })
+  } catch {
+    return null
+  }
+}
+
+function isLikelyOGImage(name: string, width?: number, height?: number): boolean {
+  // Check filename first
+  const lowerName = name.toLowerCase()
+  if (lowerName.includes('og') || lowerName.includes('opengraph') || lowerName.includes('social')) {
+    return true
+  }
+
+  // Check dimensions - OG images are typically 1200x630 (1.91:1 ratio)
+  if (width && height) {
+    const ratio = width / height
+    // OG ratio is ~1.91, allow some variance (1.7 to 2.1)
+    const isOGRatio = ratio >= 1.7 && ratio <= 2.1
+    // Also check if it's a reasonable OG size (at least 600px wide)
+    const isOGSize = width >= 600 && height >= 300
+
+    if (isOGRatio && isOGSize) {
+      return true
+    }
+  }
+
+  return false
 }
 
 async function findOGImages(dir: string): Promise<ImageInfo[]> {
@@ -39,12 +96,9 @@ async function findOGImages(dir: string): Promise<ImageInfo[]> {
         } else if (entry.isFile()) {
           const ext = extname(entry.name).toLowerCase()
           if (['.png', '.jpg', '.jpeg'].includes(ext)) {
-            // Check if it looks like an OG image (has 'og' in name or in common locations)
-            const name = entry.name.toLowerCase()
-            const isOG = name.includes('og') ||
-                        currentDir.includes('public') ||
-                        currentDir.includes('static') ||
-                        currentDir.includes('assets')
+            // Get dimensions to check if it's an OG image
+            const dimensions = await getImageDimensions(fullPath)
+            const isOG = isLikelyOGImage(entry.name, dimensions?.width, dimensions?.height)
 
             if (isOG) {
               const stats = await stat(fullPath)
@@ -52,7 +106,9 @@ async function findOGImages(dir: string): Promise<ImageInfo[]> {
                 path: fullPath,
                 name: entry.name,
                 size: stats.size,
-                url: `/image?path=${encodeURIComponent(fullPath)}`
+                url: `/image?path=${encodeURIComponent(fullPath)}`,
+                width: dimensions?.width,
+                height: dimensions?.height
               })
             }
           }
@@ -367,6 +423,7 @@ function generateHTML(images: ImageInfo[], dir: string): string {
         <div class="card-meta">
           <div class="card-name">${img.name}</div>
           <div class="card-details">
+            ${img.width && img.height ? `<span>${img.width}x${img.height}</span>` : ''}
             <span>${Math.round(img.size / 1024)}KB</span>
             <span>${img.path.replace(dir, '.')}</span>
           </div>
