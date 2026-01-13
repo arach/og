@@ -435,16 +435,32 @@ export async function startViewer(dir: string, port = 3333): Promise<void> {
     res.end(html)
   })
 
-  server.listen(port, () => {
-    console.log(`\n  OG Viewer running at http://localhost:${port}`)
-    console.log(`  Scanning: ${dir}`)
-    console.log(`  Found ${images.length} image${images.length !== 1 ? 's' : ''}\n`)
-    console.log(`  Press Ctrl+C to stop\n`)
-  })
+  const tryListen = (currentPort: number): void => {
+    server.once('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE' && currentPort < port + 10) {
+        tryListen(currentPort + 1)
+      } else if (err.code === 'EADDRINUSE') {
+        console.error(`\n  Could not find available port (tried ${port}-${currentPort})`)
+        process.exit(1)
+      } else {
+        throw err
+      }
+    })
 
-  // Try to open in browser
-  const open = await import('node:child_process').then(m => m.exec)
-  const cmd = process.platform === 'darwin' ? 'open' :
-              process.platform === 'win32' ? 'start' : 'xdg-open'
-  open(`${cmd} http://localhost:${port}`)
+    server.listen(currentPort, () => {
+      console.log(`\n  OG Viewer running at http://localhost:${currentPort}`)
+      console.log(`  Scanning: ${dir}`)
+      console.log(`  Found ${images.length} image${images.length !== 1 ? 's' : ''}\n`)
+      console.log(`  Press Ctrl+C to stop\n`)
+
+      // Try to open in browser
+      import('node:child_process').then(m => {
+        const cmd = process.platform === 'darwin' ? 'open' :
+                    process.platform === 'win32' ? 'start' : 'xdg-open'
+        m.exec(`${cmd} http://localhost:${currentPort}`)
+      })
+    })
+  }
+
+  tryListen(port)
 }
