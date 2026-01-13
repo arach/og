@@ -63,10 +63,10 @@ function setupTabs() {
   const codeEl = document.getElementById('install-cmd');
 
   const commands = {
-    pnpm: 'pnpx @arach/og --help',
-    npm: 'npx @arach/og --help',
-    yarn: 'yarn dlx @arach/og --help',
-    bun: 'bunx @arach/og --help'
+    pnpm: 'pnpx @arach/og viewer',
+    npm: 'npx @arach/og viewer',
+    yarn: 'yarn dlx @arach/og viewer',
+    bun: 'bunx @arach/og viewer'
   };
 
   tabs.forEach(tab => {
