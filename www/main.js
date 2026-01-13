@@ -57,6 +57,28 @@ function setupCopyButtons() {
   });
 }
 
+// Package Runner Tabs (bunx, npx, pnpx, yarn dlx)
+function setupTabs() {
+  const tabs = document.querySelectorAll('.install-tab');
+  const codeEl = document.getElementById('install-cmd');
+
+  const commands = {
+    pnpm: 'pnpx @arach/og --help',
+    npm: 'npx @arach/og --help',
+    yarn: 'yarn dlx @arach/og --help',
+    bun: 'bunx @arach/og --help'
+  };
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const pm = tab.getAttribute('data-pm');
+      codeEl.textContent = commands[pm];
+    });
+  });
+}
+
 async function handleCopy(btn, text) {
   try {
     await navigator.clipboard.writeText(text);
@@ -76,3 +98,4 @@ async function handleCopy(btn, text) {
 }
 
 setupCopyButtons();
+setupTabs();
