@@ -55,19 +55,28 @@ async function getImageDimensions(filePath: string): Promise<{ width: number; he
 }
 
 function isLikelyOGImage(name: string, width?: number, height?: number): boolean {
-  // Check filename first
   const lowerName = name.toLowerCase()
-  if (lowerName.includes('og') || lowerName.includes('opengraph') || lowerName.includes('social')) {
+
+  // Exclude common non-OG image patterns
+  const excludePatterns = ['logo', 'icon', 'avatar', 'favicon', 'header', 'banner', 'thumb', 'thumbnail', 'badge', 'button', 'sprite']
+  if (excludePatterns.some(pattern => lowerName.includes(pattern))) {
+    return false
+  }
+
+  // Strong match: filename explicitly mentions OG
+  if (lowerName.includes('og.') || lowerName.includes('og-') || lowerName.includes('-og.') ||
+      lowerName.includes('opengraph') || lowerName.includes('open-graph') ||
+      lowerName.includes('social-card') || lowerName.includes('social-image')) {
     return true
   }
 
-  // Check dimensions - OG images are typically 1200x630 (1.91:1 ratio)
+  // Dimension match: must be close to standard OG size (1200x630)
   if (width && height) {
     const ratio = width / height
-    // OG ratio is ~1.91, allow some variance (1.7 to 2.1)
-    const isOGRatio = ratio >= 1.7 && ratio <= 2.1
-    // Also check if it's a reasonable OG size (at least 600px wide)
-    const isOGSize = width >= 600 && height >= 300
+    // OG ratio is ~1.91, tight variance (1.85 to 1.95)
+    const isOGRatio = ratio >= 1.85 && ratio <= 1.95
+    // Must be reasonably large (at least 1000px wide for proper OG)
+    const isOGSize = width >= 1000
 
     if (isOGRatio && isOGSize) {
       return true
