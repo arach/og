@@ -57,31 +57,6 @@ function setupCopyButtons() {
   });
 }
 
-// Package Manager Tabs
-function setupTabs() {
-  const tabs = document.querySelectorAll('.install-tab');
-  const codeEl = document.getElementById('install-cmd');
-  
-  const commands = {
-    pnpm: 'pnpm add @arach/og',
-    npm: 'npm install @arach/og',
-    yarn: 'yarn add @arach/og',
-    bun: 'bun add @arach/og'
-  };
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      // Update Active State
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      
-      // Update Command
-      const pm = tab.getAttribute('data-pm');
-      codeEl.textContent = commands[pm];
-    });
-  });
-}
-
 async function handleCopy(btn, text) {
   try {
     await navigator.clipboard.writeText(text);
@@ -101,4 +76,3 @@ async function handleCopy(btn, text) {
 }
 
 setupCopyButtons();
-setupTabs();

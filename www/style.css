@@ -425,6 +425,14 @@ h1 {
   color: #fff;
 }
 
+.install-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 12px;
+  text-align: center;
+  font-weight: 300;
+}
+
 /* Templates */
 .templates {
   padding: 100px 0;

@@ -91,23 +91,18 @@
       <div class="container">
         <div class="quick-start-content">
           <div class="qs-text">
-            <h2>Get started in seconds</h2>
-            <p>Install the package and start generating images with your favorite framework.</p>
+            <h2>Try it now</h2>
+            <p>No install needed. Just run it.</p>
           </div>
           <div class="install-wrapper">
-            <div class="install-tabs">
-              <button class="install-tab active" data-pm="pnpm">pnpm</button>
-              <button class="install-tab" data-pm="npm">npm</button>
-              <button class="install-tab" data-pm="yarn">yarn</button>
-              <button class="install-tab" data-pm="bun">bun</button>
-            </div>
             <div class="install">
               <span class="install-prompt">$</span>
-              <code id="install-cmd">pnpm add @arach/og</code>
+              <code id="install-cmd">bunx @arach/og validate github.com</code>
               <button class="install-copy" title="Copy command">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
               </button>
             </div>
+            <p class="install-hint">Checks any site's OG tags instantly. Cached after first run.</p>
           </div>
         </div>
       </div>
@@ -189,25 +184,25 @@
         <div class="cli-grid">
           <div class="cli-command">
             <div class="cli-command-header">
-              <code>og config.json</code>
+              <code>bunx @arach/og config.json</code>
             </div>
             <p>Generate OG images from a JSON config file. Supports single or batch generation.</p>
           </div>
           <div class="cli-command">
             <div class="cli-command-header">
-              <code>og validate &lt;url&gt;</code>
+              <code>bunx @arach/og validate &lt;url&gt;</code>
             </div>
             <p>Check a URL's OG tags. Validates title, description, image size, and dimensions.</p>
           </div>
           <div class="cli-command">
             <div class="cli-command-header">
-              <code>og audit &lt;url&gt;</code>
+              <code>bunx @arach/og audit &lt;url&gt;</code>
             </div>
             <p>Audit an entire site via sitemap. Get a full report of OG coverage across all pages.</p>
           </div>
           <div class="cli-command">
             <div class="cli-command-header">
-              <code>og viewer</code>
+              <code>bunx @arach/og viewer</code>
             </div>
             <p>Launch a local viewer to preview your OG inventory with social platform mockups.</p>
           </div>
