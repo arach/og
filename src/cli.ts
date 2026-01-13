@@ -109,8 +109,10 @@ async function main() {
 
   // Viewer command
   if (command === 'viewer') {
-    const dir = args[1] ? resolve(process.cwd(), args[1]) : process.cwd()
     const port = args.includes('--port') ? parseInt(args[args.indexOf('--port') + 1]) : 3333
+    // Get directory, filtering out flags
+    const dirArg = args.slice(1).find(a => !a.startsWith('--') && args[args.indexOf(a) - 1] !== '--port')
+    const dir = dirArg ? resolve(process.cwd(), dirArg) : process.cwd()
     await startViewer(dir, port)
     return
   }

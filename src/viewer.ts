@@ -172,24 +172,96 @@ function generateHTML(images: ImageInfo[], dir: string): string {
       border-color: #444;
     }
     .empty {
+      max-width: 560px;
+      margin: 0 auto;
       text-align: center;
       padding: 80px 40px;
-      color: #666;
+    }
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #1a1a1a, #222);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
     }
     .empty h2 {
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       margin-bottom: 12px;
-      color: #888;
+      color: #fafafa;
+      font-weight: 600;
     }
-    .empty p {
-      font-size: 0.9rem;
+    .empty .subtitle {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 32px;
       line-height: 1.6;
     }
-    .empty code {
+    .empty-steps {
+      text-align: left;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .empty-steps h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #555;
+      margin-bottom: 16px;
+    }
+    .empty-step {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .empty-step:last-child {
+      border-bottom: none;
+    }
+    .step-num {
+      width: 24px;
+      height: 24px;
       background: #222;
-      padding: 2px 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #888;
+      flex-shrink: 0;
+    }
+    .step-content h4 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #ccc;
+      margin-bottom: 4px;
+    }
+    .step-content p {
+      font-size: 0.8rem;
+      color: #666;
+      line-height: 1.5;
+    }
+    .empty code {
+      background: #1a1a1a;
+      padding: 3px 8px;
       border-radius: 4px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      color: #888;
+    }
+    .empty-hint {
+      font-size: 0.8rem;
+      color: #555;
+    }
+    .empty-hint a {
+      color: #888;
+      text-decoration: underline;
     }
     .social-preview {
       margin-top: 16px;
@@ -243,11 +315,45 @@ function generateHTML(images: ImageInfo[], dir: string): string {
 
   ${images.length === 0 ? `
   <div class="empty">
-    <h2>No OG images found</h2>
-    <p>
-      Looking for PNG/JPG files with "og" in the name, or in<br>
-      <code>public/</code>, <code>static/</code>, or <code>assets/</code> directories.<br><br>
-      Generate one with: <code>og config.json</code>
+    <div class="empty-icon">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" style="color: #666;">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+    </div>
+    <h2>Welcome to OG Viewer</h2>
+    <p class="subtitle">
+      You're in the right place. Let's get your OG images sorted.<br>
+      Already have some? Point me to them. Need to create them? Here's how:
+    </p>
+    <div class="empty-steps">
+      <h3>Get Started</h3>
+      <div class="empty-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Create a config file</h4>
+          <p>Create <code>og.json</code> with your image settings (title, template, colors)</p>
+        </div>
+      </div>
+      <div class="empty-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Generate your image</h4>
+          <p>Run <code>bunx @arach/og og.json</code> to create your OG image</p>
+        </div>
+      </div>
+      <div class="empty-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Refresh this page</h4>
+          <p>Your new image will appear here with social preview mockups</p>
+        </div>
+      </div>
+    </div>
+    <p class="empty-hint">
+      Currently scanning: <code>${dir}</code><br>
+      <a href="https://github.com/arach/og#readme">View documentation →</a>
     </p>
   </div>
   ` : `
