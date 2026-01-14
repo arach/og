@@ -7,6 +7,7 @@ import { validateOG, formatValidationResult } from './validate.js'
 import { startViewer } from './viewer.js'
 import { auditSite } from './audit.js'
 import { generateSitemap, printSitemapHelp } from './sitemap.js'
+import { runSetup } from './setup.js'
 import type { OGConfig } from './types.js'
 
 async function main() {
@@ -91,6 +92,13 @@ async function main() {
       console.error('Error:', error instanceof Error ? error.message : error)
       process.exit(1)
     }
+    return
+  }
+
+  // Setup command - uses Claude Code for smart project analysis
+  if (command === 'setup') {
+    const ogPath = args[1] || 'og.png'
+    await runSetup(ogPath)
     return
   }
 
@@ -231,6 +239,7 @@ function printHelp() {
 Usage:
   og generate             Generate OG image with smart defaults
   og generate <config>    Generate from a config file
+  og setup [og.png]       Set up meta tags (uses Claude Code)
   og validate <url>       Validate OG tags on a single URL
   og audit <url>          Audit all pages on a site (uses sitemap)
   og sitemap [url] [paths]  Generate a sitemap.xml
@@ -301,6 +310,16 @@ Generate:
   • Falls back to directory name
   • Uses 'branded' template
   • Outputs to og.png
+
+Setup:
+  Analyze your project and get tailored meta tag instructions.
+  Uses Claude Code CLI for smart project detection.
+
+  $ og setup                # After generating og.png
+  $ og setup public/og.png  # Custom image path
+
+  Detects: React, Next.js, Vite, existing helmet, etc.
+  Provides: Copy-pasteable code + step-by-step instructions
 
 Templates: branded, docs, minimal, editor-dark
 `)
