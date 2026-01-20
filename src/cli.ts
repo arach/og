@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { readFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { resolve, extname } from 'node:path'
 import { generateOG, generateOGBatch } from './generate.js'
 import { validateOG, formatValidationResult } from './validate.js'
 import { startViewer } from './viewer.js'
@@ -9,6 +9,47 @@ import { auditSite } from './audit.js'
 import { generateSitemap, printSitemapHelp } from './sitemap.js'
 import { runSetup } from './setup.js'
 import type { OGConfig } from './types.js'
+
+/**
+ * Parse --var key=value flags from args
+ */
+function parseVars(args: string[]): Record<string, string> {
+  const vars: Record<string, string> = {}
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--var' && args[i + 1]) {
+      const [key, ...valueParts] = args[i + 1].split('=')
+      if (key && valueParts.length > 0) {
+        vars[key] = valueParts.join('=')
+      }
+      i++
+    }
+  }
+  return vars
+}
+
+/**
+ * Get a string argument value
+ */
+function getArg(args: string[], flag: string): string | undefined {
+  const idx = args.indexOf(flag)
+  return idx !== -1 && args[idx + 1] ? args[idx + 1] : undefined
+}
+
+/**
+ * Get an integer argument value
+ */
+function getArgInt(args: string[], flag: string, defaultValue: number): number {
+  const val = getArg(args, flag)
+  return val ? parseInt(val, 10) : defaultValue
+}
+
+/**
+ * Check if a file path is a custom template
+ */
+function isTemplateFile(path: string): boolean {
+  const ext = extname(path).toLowerCase()
+  return ['.tsx', '.jsx', '.html', '.htm'].includes(ext)
+}
 
 async function main() {
   const args = process.argv.slice(2)
@@ -212,7 +253,29 @@ async function main() {
     return
   }
 
-  // Generate command (default)
+  // Custom template file (tsx, jsx, html)
+  if (isTemplateFile(command)) {
+    const output = getArg(args, '-o') || getArg(args, '--output') || 'og.png'
+    const vars = parseVars(args)
+
+    try {
+      await generateOG({
+        template: command,
+        output,
+        vars: Object.keys(vars).length ? vars : undefined,
+        width: getArgInt(args, '--width', 1200),
+        height: getArgInt(args, '--height', 630),
+        scale: getArgInt(args, '--scale', 2),
+      })
+      console.log('\n✓ Done!')
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : error)
+      process.exit(1)
+    }
+    return
+  }
+
+  // Generate command (default) - JSON config file
   const configPath = resolve(process.cwd(), command)
 
   try {
@@ -239,6 +302,7 @@ function printHelp() {
 Usage:
   og generate             Generate OG image with smart defaults
   og generate <config>    Generate from a config file
+  og <template.tsx>       Generate from a custom TSX/JSX/HTML template
   og setup [og.png]       Set up meta tags (uses Claude Code)
   og validate <url>       Validate OG tags on a single URL
   og audit <url>          Audit all pages on a site (uses sitemap)
@@ -311,6 +375,33 @@ Generate:
   • Uses 'branded' template
   • Outputs to og.png
 
+Custom Templates:
+  Use your own TSX/JSX or HTML files as templates.
+
+  $ og template.tsx -o og.png --var title="Hello" --var accent="#3b82f6"
+  $ og template.html -o og.png --var title="Hello"
+
+  TSX/JSX templates (requires: pnpm add esbuild react react-dom):
+    export default function OG({ title, accent }) {
+      return (
+        <html>
+          <body style={{ width: 1200, height: 630, background: accent }}>
+            <h1>{title}</h1>
+          </body>
+        </html>
+      )
+    }
+
+  HTML templates use {{varName}} substitution:
+    <html><body><h1>{{title}}</h1></body></html>
+
+  Config file with custom template:
+  {
+    "template": "my-template.tsx",
+    "output": "og.png",
+    "vars": { "title": "Hello", "accent": "#3b82f6" }
+  }
+
 Setup:
   Analyze your project and get tailored meta tag instructions.
   Uses Claude Code CLI for smart project detection.
@@ -321,7 +412,7 @@ Setup:
   Detects: React, Next.js, Vite, existing helmet, etc.
   Provides: Copy-pasteable code + step-by-step instructions
 
-Templates: branded, docs, minimal, editor-dark
+Templates: branded, docs, minimal, editor-dark, or custom .tsx/.jsx/.html files
 `)
 }
 

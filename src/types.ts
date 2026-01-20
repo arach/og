@@ -1,10 +1,16 @@
 export type TemplateId = 'branded' | 'docs' | 'minimal' | 'editor-dark'
 
 export interface OGConfig {
-  /** Template to use */
-  template?: TemplateId
-  /** Primary title */
-  title: string
+  /**
+   * Template to use.
+   * Can be a built-in template ID or a path to a custom template file.
+   * Supports: .tsx, .jsx, .html, .htm
+   * For TSX/JSX: export default React component, receives vars as props
+   * For HTML: simple {{varName}} substitution
+   */
+  template?: TemplateId | string
+  /** Primary title (required for built-in templates) */
+  title?: string
   /** Subtitle or description */
   subtitle?: string
   /** Brand/accent color (hex) */
@@ -29,6 +35,8 @@ export interface OGConfig {
   logo?: string
   /** Optional tag/chip text */
   tag?: string
+  /** Variables passed to custom template (as props for TSX/JSX, substitution for HTML) */
+  vars?: Record<string, string | number | boolean>
 }
 
 export interface TemplateContext {
