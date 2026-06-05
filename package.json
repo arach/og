@@ -9,6 +9,14 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./hudson": {
+      "import": "./src/hudson/index.ts",
+      "types": "./src/hudson/index.ts"
+    },
+    "./catalog": {
+      "import": "./catalog/index.ts",
+      "types": "./catalog/index.ts"
     }
   },
   "bin": {
@@ -16,13 +24,15 @@
   },
   "files": [
     "dist",
-    "templates"
+    "templates",
+    "src/hudson",
+    "catalog"
   ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "node --test src/**/*.test.ts",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "bun run build"
   },
   "keywords": [
     "og",
@@ -35,11 +45,16 @@
   "author": "Arach",
   "license": "MIT",
   "dependencies": {
-    "puppeteer": "^24.0.0"
+    "puppeteer": "^24.0.0",
+    "hudsonkit": "file:../hudson/packages/web/hudsonkit",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3"
   },
   "peerDependencies": {
     "esbuild": ">=0.17.0",

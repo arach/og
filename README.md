@@ -101,6 +101,16 @@ await generateOGBatch([
 ])
 ```
 
+## Hudson / Atelier bundle
+
+`@arach/og` exports a Hudson app bundle from `./catalog`:
+
+```ts
+import { ogBundle, ogWorkspaceEntry, ogApp } from '@arach/og/catalog'
+```
+
+The Preframe-style alias `catalogApp` is also exported, so a host can resolve it with `mod.catalogApp ?? mod.ogApp ?? mod.default`. The bundle includes the `HudsonApp`, intents, config/HTML ports, a workspace registration entry, and a note describing assets/toolsets.
+
 ## License
 
 MIT
