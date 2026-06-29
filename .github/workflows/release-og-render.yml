@@ -1,0 +1,132 @@
+name: Release og-render
+
+on:
+  push:
+    tags:
+      - 'og-render-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (defaults to package.json)'
+        required: false
+      upload_release:
+        description: 'Create or update the GitHub release'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-og-render-${{ github.ref_name || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build, sign, and notarize og-render
+    runs-on: macos-latest
+    timeout-minutes: 30
+    environment: Production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Resolve version
+        id: release
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version || '' }}
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            version="${INPUT_VERSION:-$(node -p "require('./package.json').version")}"
+            tag="og-render-v${version}"
+          else
+            tag="${GITHUB_REF_NAME}"
+            version="${tag#og-render-v}"
+          fi
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "::error::Version must be X.Y.Z, got: $version"
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Import Developer ID certificate
+        shell: bash
+        env:
+          P12_BASE64: ${{ secrets.MACOS_DEVELOPER_ID_APPLICATION_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.MACOS_DEVELOPER_ID_APPLICATION_P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.MACOS_RELEASE_KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$P12_BASE64" || -z "$P12_PASSWORD" || -z "$KEYCHAIN_PASSWORD" ]]; then
+            echo "::error::Missing macOS signing secrets."
+            exit 1
+          fi
+          keychain="$RUNNER_TEMP/og-release.keychain-db"
+          cert="$RUNNER_TEMP/developer-id-application.p12"
+          printf '%s' "$P12_BASE64" | base64 -d > "$cert"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$keychain"
+          security import "$cert" -k "$keychain" -P "$P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          security list-keychains -d user -s "$keychain" "$HOME/Library/Keychains/login.keychain-db"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$keychain"
+
+      - name: Configure notarization profile
+        shell: bash
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$APPLE_ID" || -z "$APPLE_TEAM_ID" || -z "$APPLE_APP_SPECIFIC_PASSWORD" ]]; then
+            echo "::error::Missing Apple notarization secrets."
+            exit 1
+          fi
+          xcrun notarytool store-credentials og-ci-notarytool \
+            --apple-id "$APPLE_ID" \
+            --team-id "$APPLE_TEAM_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD"
+
+      - name: Build, sign, and notarize
+        env:
+          OG_NOTARY_PROFILE: og-ci-notarytool
+          OG_SIGN_IDENTITY: ${{ vars.OG_SIGN_IDENTITY || '' }}
+        run: bash scripts/release-og-render.sh "${{ steps.release.outputs.version }}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: og-render-${{ steps.release.outputs.version }}
+          path: dist/release/
+          if-no-files-found: error
+
+      - name: Create GitHub release
+        if: github.event_name == 'push' || inputs.upload_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          assets=(dist/release/*.zip dist/release/manifest.json)
+          notes="Signed and notarized og-render v${RELEASE_VERSION} for macOS.
+
+          - \`og-render-v${RELEASE_VERSION}-darwin-arm64.zip\` — Apple Silicon
+          - \`og-render-v${RELEASE_VERSION}-darwin-x64.zip\` — Intel (when built)
+
+          Extract and place on PATH, or let \`@arach/og\` use the bundled copy in \`native/og-render/bin/\`."
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "${assets[@]}" --clobber
+          else
+            gh release create "$RELEASE_TAG" "${assets[@]}" \
+              --title "og-render v${RELEASE_VERSION}" \
+              --notes "$notes"
+          fi

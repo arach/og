@@ -1,14 +1,27 @@
 #!/usr/bin/env node
 
+import { spawnSync } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
-import { resolve, extname } from 'node:path'
+import { resolve, extname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { generateOG, generateOGBatch } from './generate.js'
 import { validateOG, formatValidationResult } from './validate.js'
 import { startViewer } from './viewer.js'
 import { auditSite } from './audit.js'
 import { generateSitemap, printSitemapHelp } from './sitemap.js'
 import { runSetup } from './setup.js'
+import { buildOgRender, getOgRenderInfo, resolveOgRenderBinary } from './render-native.js'
 import type { OGConfig } from './types.js'
+
+const PACKAGE_ROOT = fileURLToPath(new URL('..', import.meta.url))
+
+function stageOgRender(): void {
+  const script = join(PACKAGE_ROOT, 'scripts/stage-og-render.ts')
+  const result = spawnSync('bun', [script], { stdio: 'inherit' })
+  if (result.status !== 0) {
+    throw new Error('Failed to stage og-render binary')
+  }
+}
 
 /**
  * Parse --var key=value flags from args
@@ -56,6 +69,11 @@ async function main() {
 
   if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
     printHelp()
+    process.exit(0)
+  }
+
+  if (args.includes('--version') || args.includes('-v')) {
+    await printVersion()
     process.exit(0)
   }
 
@@ -129,6 +147,43 @@ async function main() {
     try {
       await generateOG(config)
       console.log(`  ✓ Created ${config.output}\n`)
+    } catch (error) {
+      console.error('Error:', error instanceof Error ? error.message : error)
+      process.exit(1)
+    }
+    return
+  }
+
+  // Version
+  if (command === 'version') {
+    await printVersion()
+    return
+  }
+
+  // Build native WebKit renderer (macOS)
+  if (command === 'build') {
+    if (process.platform !== 'darwin') {
+      console.error('Error: og build requires macOS (system WebKit).')
+      process.exit(1)
+    }
+
+    const existing = await resolveOgRenderBinary()
+    if (existing && !args.includes('--force')) {
+      const info = await getOgRenderInfo()
+      console.log(`✓ og-render ready (${info.source})`)
+      console.log(`  ${existing}`)
+      if (info.manifest?.version) {
+        console.log(`  bundled v${info.manifest.version}`)
+      }
+      console.log('  Run with --force to rebuild.')
+      return
+    }
+
+    try {
+      console.log('\n  Building og-render...\n')
+      const binary = await buildOgRender()
+      stageOgRender()
+      console.log(`\n  ✓ Built ${binary}\n`)
     } catch (error) {
       console.error('Error:', error instanceof Error ? error.message : error)
       process.exit(1)
@@ -303,6 +358,8 @@ Usage:
   og generate             Generate OG image with smart defaults
   og generate <config>    Generate from a config file
   og <template.tsx>       Generate from a custom TSX/JSX/HTML template
+  og build                Build the native og-render binary (macOS)
+  og version              Show @arach/og and og-render versions
   og setup [og.png]       Set up meta tags (uses Claude Code)
   og validate <url>       Validate OG tags on a single URL
   og audit <url>          Audit all pages on a site (uses sitemap)
@@ -355,8 +412,16 @@ Validate:
 
   $ og validate https://example.com/page
 
+Build:
+  Compile the native WebKit renderer on macOS. Auto-runs on first generate
+  if og-render is missing — use this to build ahead of time.
+
+  $ og build
+  $ og build --force
+
 Generate:
   Create OG images. Runs with smart defaults or from a config file.
+  Builds og-render automatically on first run if needed.
 
   $ og generate                    # Smart defaults from package.json
   $ og generate og.config.json     # From config file
@@ -381,7 +446,7 @@ Custom Templates:
   $ og template.tsx -o og.png --var title="Hello" --var accent="#3b82f6"
   $ og template.html -o og.png --var title="Hello"
 
-  TSX/JSX templates (requires: pnpm add esbuild react react-dom):
+  TSX/JSX templates (requires: bun add esbuild react react-dom):
     export default function OG({ title, accent }) {
       return (
         <html>
@@ -414,6 +479,30 @@ Setup:
 
 Templates: branded, docs, minimal, editor-dark, or custom .tsx/.jsx/.html files
 `)
+}
+
+async function printVersion(): Promise<void> {
+  const pkg = JSON.parse(await readFile(join(PACKAGE_ROOT, 'package.json'), 'utf-8'))
+  const info = await getOgRenderInfo()
+
+  console.log(`@arach/og ${pkg.version}`)
+
+  if (process.platform !== 'darwin') {
+    console.log('og-render: macOS only')
+    return
+  }
+
+  if (!info.binary) {
+    console.log('og-render: not installed (run og build)')
+    return
+  }
+
+  const label = info.manifest?.version ? `v${info.manifest.version}` : 'local'
+  console.log(`og-render: ${label} (${info.source})`)
+  console.log(`  ${info.binary}`)
+  if (info.manifest?.builtAt) {
+    console.log(`  built ${info.manifest.builtAt}`)
+  }
 }
 
 async function resolveDefaultConfig(): Promise<OGConfig> {

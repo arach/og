@@ -47,7 +47,7 @@ export const ogBundle: OgHudsonBundle = {
     note: 'Built-in templates are source assets; generated images are user/project outputs and are not bundled by default.',
   },
   note:
-    'OG slots: Content edits declarative config and previews built-in templates, LeftPanel switches templates and output presets, Inspector edits raw JSON, Terminal summarizes generation/ports. Intents cover template switches, config copy/download, HTML copy, and reset. Ports expose config-json and preview-html, with config-json accepted as an input. No AI toolset is bundled yet; Puppeteer PNG generation remains in the @arach/og CLI or a future host route.',
+    'OG slots: Content edits declarative config and previews built-in templates, LeftPanel switches templates and output presets, Inspector edits raw JSON, Terminal summarizes generation/ports. Intents cover template switches, config copy/download, HTML copy, and reset. Ports expose config-json and preview-html, with config-json accepted as an input. No AI toolset is bundled yet; PNG generation runs via og-render in the @arach/og CLI.',
 };
 
 // Preframe-compatible app aliases for hosts that read `catalogApp` first.

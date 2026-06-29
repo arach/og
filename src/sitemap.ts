@@ -112,13 +112,13 @@ export function printSitemapHelp(): void {
   Quick-start tools:
 
   # Next.js projects - auto-generates from pages
-  npx next-sitemap
+  bunx next-sitemap
 
   # Crawl any site and generate sitemap
-  npx sitemap-generator-cli https://yoursite.com
+  bunx sitemap-generator-cli https://yoursite.com
 
   # Validate your sitemap
-  npx sitemap-validator sitemap.xml
+  bunx sitemap-validator sitemap.xml
 
   Open source repos:
   • next-sitemap: https://github.com/iamvishnusankar/next-sitemap

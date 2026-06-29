@@ -2,15 +2,15 @@
 
 ## Overview
 
-Add support for custom HTML templates, allowing projects to define their own OG image layouts while still benefiting from `@arach/og`'s rendering pipeline (puppeteer, font loading, retina output).
+Add support for custom HTML templates, allowing projects to define their own OG image layouts while still benefiting from `@arach/og`'s rendering pipeline (og-render, font loading, retina output).
 
 ## Problem
 
 Currently, `@arach/og` only supports 4 built-in templates (`branded`, `docs`, `minimal`, `editor-dark`). Projects with custom branding or unique layouts (like HUD's wireframe UI preview) must:
 
-1. Write their own puppeteer script
+1. Write their own browser screenshot script
 2. Manage font loading, viewport setup, and rendering manually
-3. Lose the convenience of `npx @arach/og`
+3. Lose the convenience of `bunx @arach/og`
 
 ## Proposed Solution
 
@@ -18,10 +18,10 @@ Currently, `@arach/og` only supports 4 built-in templates (`branded`, `docs`, `m
 
 ```bash
 # Direct HTML file
-npx @arach/og my-template.html -o public/og.png
+bunx @arach/og my-template.html -o public/og.png
 
 # With options
-npx @arach/og my-template.html -o public/og.png --width 1200 --height 630 --scale 2
+bunx @arach/og my-template.html -o public/og.png --width 1200 --height 630 --scale 2
 ```
 
 ### 2. HTML Reference in Config
@@ -147,7 +147,7 @@ if (command.endsWith('.html') || command.endsWith('.htm')) {
 ### Example 1: Simple Custom Template
 
 ```bash
-npx @arach/og landing.html -o public/og-landing.png
+bunx @arach/og landing.html -o public/og-landing.png
 ```
 
 ### Example 2: Config with Variables
@@ -194,7 +194,7 @@ npx @arach/og landing.html -o public/og-landing.png
 
 ## Acceptance Criteria
 
-- [ ] `npx @arach/og template.html` renders custom HTML
+- [ ] `bunx @arach/og template.html` renders custom HTML
 - [ ] `-o` / `--output` flag works with HTML files
 - [ ] `--width`, `--height`, `--scale` flags work with HTML files
 - [ ] Config files support `html` field

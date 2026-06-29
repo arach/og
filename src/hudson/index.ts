@@ -40,7 +40,7 @@ const ogManifest: AppManifest = {
 export const ogApp: HudsonApp = {
   id: 'og',
   name: 'OG',
-  description: 'Declarative OG-image generation with Puppeteer',
+  description: 'Declarative OG-image generation with native WebKit rendering',
   mode: 'panel',
   icon: createElement('span', { className: 'text-cyan-300 font-mono text-[10px]' }, 'OG'),
   manifest: ogManifest,

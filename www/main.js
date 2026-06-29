@@ -1,10 +1,11 @@
+import { loadTemplateCatalog } from './catalog.js'
+
 // Dark Mode Logic
 const themeToggleBtn = document.getElementById('theme-toggle');
 const root = document.documentElement;
 const iconSun = document.querySelector('.icon-sun');
 const iconMoon = document.querySelector('.icon-moon');
 
-// Check system preference or local storage
 const savedTheme = localStorage.getItem('theme');
 const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 const currentTheme = savedTheme || systemTheme;
@@ -25,7 +26,6 @@ function updateIcons(theme) {
   }
 }
 
-// Initialize
 setTheme(currentTheme);
 
 themeToggleBtn.addEventListener('click', () => {
@@ -33,12 +33,34 @@ themeToggleBtn.addEventListener('click', () => {
   setTheme(isDark ? 'light' : 'dark');
 });
 
+function renderTemplateCards(catalog) {
+  const grid = document.getElementById('templates-grid');
+  if (!grid) return;
 
-// Copy Functionality
+  grid.innerHTML = catalog.map((template) => `
+    <a class="template-card" href="/viewer.html#${template.id}">
+      <div class="card-preview">
+        <div class="og-preview-frame">
+          <img src="${template.png}" alt="${template.id} template" width="1200" height="630" loading="lazy" decoding="async">
+        </div>
+      </div>
+      <div class="template-info">
+        <div class="template-header">
+          <div class="template-name">${template.id}</div>
+          <button class="copy-template-id" data-id="${template.id}" title="Copy ID" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+        <div class="template-desc">${template.description}</div>
+      </div>
+    </a>
+  `).join('');
+
+}
+
 function setupCopyButtons() {
-  // Install Command Copy
   const installBtn = document.querySelector('.install-copy');
-  
+
   if (installBtn) {
     installBtn.addEventListener('click', () => {
       const installCode = document.getElementById('install-cmd').textContent;
@@ -46,7 +68,6 @@ function setupCopyButtons() {
     });
   }
 
-  // Template ID Copy
   document.querySelectorAll('.copy-template-id').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -57,37 +78,14 @@ function setupCopyButtons() {
   });
 }
 
-// Package Runner Tabs (bunx, npx, pnpx, yarn dlx)
-function setupTabs() {
-  const tabs = document.querySelectorAll('.install-tab');
-  const codeEl = document.getElementById('install-cmd');
-
-  const commands = {
-    pnpm: 'pnpx @arach/og viewer',
-    npm: 'npx @arach/og viewer',
-    yarn: 'yarn dlx @arach/og viewer',
-    bun: 'bunx @arach/og viewer'
-  };
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const pm = tab.getAttribute('data-pm');
-      codeEl.textContent = commands[pm];
-    });
-  });
-}
-
 async function handleCopy(btn, text) {
   try {
     await navigator.clipboard.writeText(text);
-    
-    // Visual feedback
+
     const originalIcon = btn.innerHTML;
     btn.classList.add('copied');
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" class="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-    
+
     setTimeout(() => {
       btn.innerHTML = originalIcon;
       btn.classList.remove('copied');
@@ -97,5 +95,10 @@ async function handleCopy(btn, text) {
   }
 }
 
-setupCopyButtons();
-setupTabs();
+async function init() {
+  const catalog = await loadTemplateCatalog();
+  renderTemplateCards(catalog);
+  setupCopyButtons();
+}
+
+init();

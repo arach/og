@@ -1,16 +1,18 @@
 import type { TemplateFunction } from '../types.js'
+import { templateFonts } from '../template-fonts.js'
 
 /**
  * Editor Dark template - dark theme for product/editor pages
  */
-export const editorDark: TemplateFunction = (ctx) => `
+export const editorDark: TemplateFunction = (ctx) => {
+  const fonts = templateFonts(ctx, { mono: true })
+
+  return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=${ctx.fonts.map(f => f.replace(/ /g, '+')).join('&family=')}&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  ${fonts.head}
   <style>
     * {
       margin: 0;
@@ -20,10 +22,16 @@ export const editorDark: TemplateFunction = (ctx) => `
     body {
       width: ${ctx.width}px;
       height: ${ctx.height}px;
+      box-sizing: border-box;
       background: #101518;
-      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-family: ${fonts.body};
       color: #f0f4f7;
       position: relative;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .glow,
+    .grid {
       overflow: hidden;
     }
     .glow {
@@ -46,10 +54,11 @@ export const editorDark: TemplateFunction = (ctx) => `
       position: relative;
       z-index: 1;
       height: 100%;
-      padding: 72px 80px;
+      padding: 76px 80px 88px;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      overflow: visible;
     }
     .editor-badge {
       display: inline-flex;
@@ -59,25 +68,31 @@ export const editorDark: TemplateFunction = (ctx) => `
       border-radius: 6px;
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.12);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: ${fonts.mono};
       font-size: 13px;
       color: ${ctx.accent};
       margin-bottom: 28px;
       width: fit-content;
     }
     .title {
-      font-family: '${ctx.fonts[0]}', serif;
-      font-size: 64px;
-      font-weight: 600;
-      line-height: 1.15;
+      font-family: ${fonts.display};
+      font-size: 60px;
+      font-weight: 500;
+      line-height: normal;
       max-width: 800px;
-      margin-bottom: 20px;
+      margin: 0;
+      padding-bottom: 0.22em;
+      letter-spacing: -0.03em;
+      overflow: visible;
     }
     .subtitle {
+      font-family: ${fonts.body};
       font-size: 26px;
+      font-weight: 400;
       color: rgba(240, 244, 247, 0.6);
       max-width: 600px;
       line-height: 1.5;
+      margin-top: 28px;
     }
     .window-controls {
       position: absolute;
@@ -108,9 +123,9 @@ export const editorDark: TemplateFunction = (ctx) => `
       box-shadow: 0 0 20px ${ctx.accent}60;
     }
     .brand-name {
-      font-family: '${ctx.fonts[0]}', serif;
+      font-family: ${fonts.display};
       font-size: 22px;
-      font-weight: 600;
+      font-weight: 500;
     }
   </style>
 </head>
@@ -134,3 +149,4 @@ export const editorDark: TemplateFunction = (ctx) => `
 </body>
 </html>
 `
+}

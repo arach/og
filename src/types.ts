@@ -29,7 +29,7 @@ export interface OGConfig {
   height?: number
   /** Device scale factor for retina (default: 2) */
   scale?: number
-  /** Custom fonts to load from Google Fonts */
+  /** Font families — use "Geist" (default) or Google Fonts specs like "Inter:wght@400;500" */
   fonts?: string[]
   /** Optional logo URL or base64 */
   logo?: string

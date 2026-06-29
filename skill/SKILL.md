@@ -5,7 +5,7 @@ description: Generate Open Graph images for projects using @arach/og. Use when s
 
 # @arach/og - OG Image Generator
 
-Generate beautiful Open Graph images with zero design effort using declarative JSON configs or custom HTML templates.
+Generate Open Graph images from declarative JSON or HTML — real fonts via native WebKit, no Chromium in npm.
 
 ## Quick Setup (Preset Templates)
 
@@ -28,12 +28,12 @@ Generate beautiful Open Graph images with zero design effort using declarative J
 ```json
 {
   "scripts": {
-    "og": "npx @arach/og og-config.json"
+    "og": "bunx @arach/og og-config.json"
   }
 }
 ```
 
-3. Run: `pnpm og` (or `npm run og`)
+3. Run: `bun run og`
 
 ## Custom HTML Templates (v0.3.0+)
 
@@ -42,7 +42,7 @@ For fully custom designs, create an HTML template and render it directly:
 ### CLI Usage
 
 ```bash
-npx @arach/og my-template.html -o public/og.png
+bunx @arach/og my-template.html -o public/og.png
 ```
 
 ### Package.json Script
@@ -50,7 +50,7 @@ npx @arach/og my-template.html -o public/og.png
 ```json
 {
   "scripts": {
-    "og": "npx @arach/og og-template.html -o public/og.png"
+    "og": "bunx @arach/og og-template.html -o public/og.png"
   }
 }
 ```
@@ -179,9 +179,9 @@ When user asks to set up OG images:
 2. **Preset**: Create `og-config.json` with appropriate template and colors
 3. **Custom**: Create `og-template.html` with their custom layout
 4. Add script to package.json:
-   - Preset: `"og": "npx @arach/og og-config.json"`
-   - Custom: `"og": "npx @arach/og og-template.html -o public/og.png"`
-5. Run `pnpm og` to generate
+   - Preset: `"og": "bunx @arach/og og-config.json"`
+   - Custom: `"og": "bunx @arach/og og-template.html -o public/og.png"`
+5. Run `bun run og` to generate
 6. Remind user to add `<meta property="og:image" content="/og.png">` to their HTML
 
 ## Installation

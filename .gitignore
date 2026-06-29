@@ -4,6 +4,9 @@ node_modules/
 # Build output
 dist/
 
+# Swift build artifacts (bundled binaries live in native/og-render/bin/)
+native/og-render/.build/
+
 # Logs
 *.log
 npm-debug.log*

@@ -1,13 +1,44 @@
 # @arach/og
 
-Declarative OG (Open Graph) image generation with Puppeteer. Pre-built templates and a simple API for generating social sharing images.
+Declarative OG (Open Graph) image generation with native WebKit rendering. Pre-built templates and a simple API for generating social sharing images.
+
+## Why not Puppeteer?
+
+Most OG tools pull in a headless browser — Puppeteer, Playwright, or a bundled Chromium — plus font files as npm dependencies to get typography right.
+
+`@arach/og` takes a different path: templates are plain HTML, fonts load from Google Fonts or CDN at render time, and a small native renderer (`og-render`) snapshots them through macOS WebKit. No Puppeteer or Chromium in npm — but you do build and run our mini browser once on macOS.
+
+| | Puppeteer / Playwright | `@arach/og` |
+|---|---|---|
+| npm browser dep | Bundled Chromium (~300MB) | None |
+| Renderer | Downloaded Chromium | `og-render` → system WebKit |
+| Fonts | npm packages or manual embed | Google Fonts / CDN at render |
+| CSS | Full | Full |
+| PNG export | macOS, Linux, CI | macOS (`og-render` required) |
 
 ## Installation
 
 ```bash
-pnpm add @arach/og
-# or
-npm install @arach/og
+bun add @arach/og
+og version   # check @arach/og + bundled og-render versions
+og build     # macOS — rebuild og-render (skipped if a bundled binary matches your arch)
+```
+
+`og-render` ships as a **prebuilt binary** for your Mac arch (`native/og-render/bin/darwin-arm64/` or `darwin-x64/`), plus Swift source if you need to rebuild. It's a headless WKWebView snapshotter, not a Chromium download. PNG export uses the bundled binary by default; `og build` refreshes it from source.
+
+**Signed releases** (Developer ID + Apple notarization) are published on GitHub:
+
+```bash
+# https://github.com/arach/og/releases — e.g. og-render-v0.3.0
+# og-render-v0.3.0-darwin-arm64.zip
+# og-render-v0.3.0-darwin-x64.zip
+```
+
+To cut a release locally or in CI:
+
+```bash
+bun run release:native          # build, sign, notarize (macOS + certs)
+# CI: push tag og-render-v0.3.0 (see .github/workflows/release-og-render.yml)
 ```
 
 ## Usage
@@ -30,7 +61,7 @@ await generateOG({
 
 ```bash
 # Generate from a config file
-npx og config.json
+bunx @arach/og config.json
 ```
 
 Config file format:
@@ -84,7 +115,7 @@ Dark theme template for developer tools and code editors.
 | `width` | `number` | `1200` | Width in pixels |
 | `height` | `number` | `630` | Height in pixels |
 | `scale` | `number` | `2` | Device scale factor (retina) |
-| `fonts` | `string[]` | `['Inter']` | Google Fonts to load |
+| `fonts` | `string[]` | `['Geist', 'Geist']` | Google Fonts spec or Geist (CDN) — loaded at render, no npm font packages |
 | `logo` | `string` | - | Logo URL or base64 |
 | `tag` | `string` | - | Tag/chip text |
 

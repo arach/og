@@ -4,20 +4,20 @@ This file provides guidance to Claude Code when working with this repository.
 
 ## Project Overview
 
-**@arach/og** is a declarative OG (Open Graph) image generation library using Puppeteer. It provides pre-built templates and a simple API for generating social sharing images.
+**@arach/og** is a declarative OG (Open Graph) image generation library using native WebKit (`og-render`). It provides pre-built templates and a simple API for generating social sharing images.
 
 ## Tech Stack
 
 - **TypeScript** - Type-safe code
-- **Puppeteer** - Headless browser for rendering
+- **og-render** - Native macOS WebKit renderer (Swift CLI)
 - **Node.js ESM** - ES modules
 
 ## Build Commands
 
 ```bash
-pnpm install     # Install dependencies
-pnpm build       # Compile TypeScript to dist/
-pnpm dev         # Watch mode compilation
+bun install      # Install dependencies
+bun run build    # Compile TypeScript to dist/
+bun run dev      # Watch mode compilation
 ```
 
 ## Architecture
@@ -28,7 +28,8 @@ pnpm dev         # Watch mode compilation
 src/
 ├── index.ts           # Public exports
 ├── types.ts           # TypeScript types
-├── generate.ts        # Puppeteer orchestration
+├── generate.ts        # Template → PNG orchestration
+├── render-native.ts   # og-render subprocess bridge
 ├── cli.ts             # CLI entry point
 └── templates/
     ├── index.ts       # Template registry

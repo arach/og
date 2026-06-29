@@ -86,7 +86,7 @@ Respond with ONLY valid JSON matching this exact structure (no markdown, no expl
   "hasExistingOgTags": boolean,
   "recommendHelmet": boolean,
   "metaTagsLocation": "path/to/file or null if unclear",
-  "installCommand": "pnpm add react-helmet-async" or null if not needed,
+  "installCommand": "bun add react-helmet-async" or null if not needed,
   "metaTags": "the actual code snippet to add (HTML meta tags or React/Next.js code)",
   "instructions": ["step 1", "step 2", ...]
 }
@@ -215,7 +215,7 @@ function printFallbackInstructions(ogImagePath: string): void {
   console.log(`    <meta property="og:type" content="website" />\n`)
 
   console.log(`  For React projects, consider react-helmet-async:`)
-  console.log(`    pnpm add react-helmet-async\n`)
+  console.log(`    bun add react-helmet-async\n`)
 
   console.log(`  For Next.js App Router, export metadata from layout.tsx:`)
   console.log(`    export const metadata = {`)

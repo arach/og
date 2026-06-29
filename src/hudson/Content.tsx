@@ -34,7 +34,7 @@ export function OgContent() {
           <div className="mb-5">
             <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-cyan-400">OG config</div>
             <h2 className="mt-1 text-lg font-semibold text-slate-100">Compose a social image</h2>
-            <p className="mt-1 text-xs leading-5 text-slate-500">Edit the declarative config. The app previews built-in templates in-browser; Puppeteer generation stays in the package CLI or a host route.</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">Edit the declarative config. The app previews built-in templates in-browser; PNG generation runs via the og-render CLI.</p>
           </div>
 
           <div className="space-y-4">

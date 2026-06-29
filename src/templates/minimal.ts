@@ -1,16 +1,18 @@
 import type { TemplateFunction } from '../types.js'
+import { templateFonts } from '../template-fonts.js'
 
 /**
  * Minimal template - clean, typography-focused
  */
-export const minimal: TemplateFunction = (ctx) => `
+export const minimal: TemplateFunction = (ctx) => {
+  const fonts = templateFonts(ctx)
+
+  return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=${ctx.fonts.map(f => f.replace(/ /g, '+')).join('&family=')}&display=swap" rel="stylesheet">
+  ${fonts.head}
   <style>
     * {
       margin: 0;
@@ -21,26 +23,32 @@ export const minimal: TemplateFunction = (ctx) => `
       width: ${ctx.width}px;
       height: ${ctx.height}px;
       background: ${ctx.background};
-      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-family: ${fonts.body};
       color: ${ctx.textColor};
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     .content {
       max-width: 900px;
       padding: 60px;
     }
     .title {
-      font-family: '${ctx.fonts[0]}', serif;
-      font-size: 68px;
-      font-weight: 600;
-      line-height: 1.15;
-      margin-bottom: 24px;
+      font-family: ${fonts.display};
+      font-size: 66px;
+      font-weight: 500;
+      line-height: normal;
+      margin: 0 0 24px;
+      letter-spacing: -0.03em;
+      padding-bottom: 0.22em;
     }
     .subtitle {
+      font-family: ${fonts.body};
       font-size: 28px;
+      font-weight: 360;
       color: ${ctx.textColor}70;
       line-height: 1.5;
     }
@@ -62,3 +70,4 @@ export const minimal: TemplateFunction = (ctx) => `
 </body>
 </html>
 `
+}

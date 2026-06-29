@@ -1,16 +1,18 @@
 import type { TemplateFunction } from '../types.js'
+import { templateFonts } from '../template-fonts.js'
 
 /**
  * Docs template - clean layout for documentation pages
  */
-export const docs: TemplateFunction = (ctx) => `
+export const docs: TemplateFunction = (ctx) => {
+  const fonts = templateFonts(ctx)
+
+  return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=${ctx.fonts.map(f => f.replace(/ /g, '+')).join('&family=')}&display=swap" rel="stylesheet">
+  ${fonts.head}
   <style>
     * {
       margin: 0;
@@ -21,10 +23,11 @@ export const docs: TemplateFunction = (ctx) => `
       width: ${ctx.width}px;
       height: ${ctx.height}px;
       background: ${ctx.background};
-      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-family: ${fonts.body};
       color: ${ctx.textColor};
       position: relative;
-      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     .accent-bar {
       position: absolute;
@@ -59,22 +62,27 @@ export const docs: TemplateFunction = (ctx) => `
       border-radius: 8px;
       background: ${ctx.accent}15;
       border: 1px solid ${ctx.accent}30;
+      font-family: ${fonts.body};
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       color: ${ctx.accent};
       margin-bottom: 24px;
       width: fit-content;
     }
     .title {
-      font-family: '${ctx.fonts[0]}', serif;
-      font-size: 64px;
-      font-weight: 600;
-      line-height: 1.15;
+      font-family: ${fonts.display};
+      font-size: 62px;
+      font-weight: 500;
+      line-height: normal;
       max-width: 850px;
-      margin-bottom: 20px;
+      margin: 0 0 20px;
+      letter-spacing: -0.03em;
+      padding-bottom: 0.22em;
     }
     .subtitle {
+      font-family: ${fonts.body};
       font-size: 26px;
+      font-weight: 400;
       color: ${ctx.textColor}80;
       max-width: 650px;
       line-height: 1.5;
@@ -100,11 +108,12 @@ export const docs: TemplateFunction = (ctx) => `
       background: ${ctx.accent};
     }
     .brand-name {
-      font-family: '${ctx.fonts[0]}', serif;
+      font-family: ${fonts.display};
       font-size: 20px;
-      font-weight: 600;
+      font-weight: 500;
     }
     .docs-label {
+      font-family: ${fonts.body};
       font-size: 16px;
       color: ${ctx.textColor}60;
       font-weight: 500;
@@ -129,3 +138,4 @@ export const docs: TemplateFunction = (ctx) => `
 </body>
 </html>
 `
+}

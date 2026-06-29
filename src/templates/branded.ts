@@ -1,16 +1,18 @@
 import type { TemplateFunction } from '../types.js'
+import { templateFonts } from '../template-fonts.js'
 
 /**
  * Branded template - full featured with grid overlay, corner crosses, and refined typography
  */
-export const branded: TemplateFunction = (ctx) => `
+export const branded: TemplateFunction = (ctx) => {
+  const fonts = templateFonts(ctx)
+
+  return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=${ctx.fonts.map(f => f.replace(/ /g, '+')).join('&family=')}&display=swap" rel="stylesheet">
+  ${fonts.head}
   <style>
     * {
       margin: 0;
@@ -21,10 +23,11 @@ export const branded: TemplateFunction = (ctx) => `
       width: ${ctx.width}px;
       height: ${ctx.height}px;
       background: ${ctx.background};
-      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-family: ${fonts.body};
       color: ${ctx.textColor};
       position: relative;
-      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     .grid {
       position: absolute;
@@ -74,32 +77,33 @@ export const branded: TemplateFunction = (ctx) => `
       border-radius: 6px;
       border: 1px solid ${ctx.accent}30;
       background: ${ctx.accent}10;
-      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-family: ${fonts.body};
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 450;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       color: ${ctx.accent};
       margin-bottom: 32px;
       width: fit-content;
     }
     .title {
-      font-family: '${ctx.fonts[0]}', serif;
-      font-size: 80px;
-      font-weight: 400;
-      font-style: italic;
-      line-height: 1.05;
+      font-family: ${fonts.display};
+      font-size: 78px;
+      font-weight: 500;
+      line-height: normal;
       max-width: 900px;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
+      margin: 0 0 24px;
+      letter-spacing: -0.035em;
+      padding-bottom: 0.22em;
     }
     .subtitle {
-      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-family: ${fonts.body};
       font-size: 26px;
-      font-weight: 400;
+      font-weight: 380;
       color: ${ctx.textColor}80;
       max-width: 650px;
       line-height: 1.5;
+      letter-spacing: -0.01em;
     }
     .brand {
       position: absolute;
@@ -116,9 +120,9 @@ export const branded: TemplateFunction = (ctx) => `
       background: ${ctx.accent};
     }
     .brand-name {
-      font-family: '${ctx.fonts[1] || ctx.fonts[0]}', system-ui, sans-serif;
+      font-family: ${fonts.body};
       font-size: 18px;
-      font-weight: 500;
+      font-weight: 450;
       color: ${ctx.textColor}90;
     }
     .bottom-bar {
@@ -136,7 +140,6 @@ export const branded: TemplateFunction = (ctx) => `
   <div class="grid"></div>
   <div class="grid-small"></div>
 
-  <!-- Corner crosses -->
   <svg class="corner-cross corner-tl" width="200" height="200" viewBox="0 0 200 200">
     <path d="M 20 60 L 140 60" fill="none"/>
     <path d="M 60 20 L 60 140" fill="none"/>
@@ -159,3 +162,4 @@ export const branded: TemplateFunction = (ctx) => `
 </body>
 </html>
 `
+}

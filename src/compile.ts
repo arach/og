@@ -25,7 +25,7 @@ async function loadDependencies() {
     } catch {
       throw new Error(
         'Custom TSX/JSX templates require additional dependencies.\n' +
-        'Install them with: pnpm add esbuild react react-dom'
+        'Install them with: bun add esbuild react react-dom'
       )
     }
   }

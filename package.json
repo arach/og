@@ -1,7 +1,8 @@
 {
   "name": "@arach/og",
   "version": "0.3.0",
-  "description": "Declarative OG image generation with Puppeteer",
+  "packageManager": "bun@1.3.11",
+  "description": "Declarative OG images via og-render (native WebKit) — real Google Fonts, no Chromium in npm",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,13 +25,19 @@
   },
   "files": [
     "dist",
+    "native",
     "templates",
     "src/hudson",
     "catalog"
   ],
   "scripts": {
     "build": "tsc",
+    "build:native": "cd native/og-render && swift build -c release && cd ../.. && bun scripts/stage-og-render.ts",
+    "stage:native": "bun scripts/stage-og-render.ts",
+    "release:native": "bash scripts/release-og-render.sh",
     "dev": "tsc --watch",
+    "export-previews": "bun scripts/export-template-pages.ts",
+    "review-pngs": "bun scripts/review-pngs.ts",
     "test": "node --test src/**/*.test.ts",
     "prepublishOnly": "bun run build"
   },
@@ -39,13 +46,15 @@
     "opengraph",
     "social",
     "image",
-    "puppeteer",
+    "webkit",
+    "google-fonts",
+    "no-puppeteer",
+    "og-image",
     "generator"
   ],
   "author": "Arach",
   "license": "MIT",
   "dependencies": {
-    "puppeteer": "^24.0.0",
     "hudsonkit": "file:../hudson/packages/web/hudsonkit",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
