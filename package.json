@@ -1,6 +1,6 @@
 {
   "name": "@arach/og",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "packageManager": "bun@1.3.11",
   "description": "Declarative OG images via og-render (native WebKit) — real Google Fonts, no Chromium in npm",
   "type": "module",
@@ -25,7 +25,11 @@
   },
   "files": [
     "dist",
-    "native",
+    "native/og-render/bin",
+    "native/og-render/manifest.json",
+    "native/og-render/og-render.entitlements",
+    "native/og-render/Package.swift",
+    "native/og-render/Sources",
     "templates",
     "src/hudson",
     "catalog"
@@ -54,8 +58,16 @@
   ],
   "author": "Arach",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arach/og.git"
+  },
+  "homepage": "https://og.arach.dev",
+  "bugs": {
+    "url": "https://github.com/arach/og/issues"
+  },
   "dependencies": {
-    "hudsonkit": "file:../hudson/packages/web/hudsonkit",
+    "hudsonkit": "^0.2.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },

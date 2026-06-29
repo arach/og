@@ -1,12 +1,37 @@
-# @arach/og
+<p align="center">
+  <img src="https://raw.githubusercontent.com/arach/og/master/examples/og-editor.png" alt="OG image generated with @arach/og" width="720">
+</p>
 
-Declarative OG (Open Graph) image generation with native WebKit rendering. Pre-built templates and a simple API for generating social sharing images.
+<h3 align="center">OG images from HTML and <em>real</em> fonts.</h3>
+
+<p align="center">
+  Declarative templates snapshotted by <code>og-render</code> — a tiny native WebKit renderer.<br>
+  Full CSS, Google Fonts at render time. No Puppeteer, no Chromium in npm.
+</p>
+
+<p align="center">
+  <a href="https://og.arach.dev"><strong>og.arach.dev</strong></a>
+  ·
+  <a href="https://www.npmjs.com/package/@arach/og">npm</a>
+  ·
+  <a href="https://github.com/arach/og/releases">og-render releases</a>
+</p>
+
+---
+
+## Try it
+
+```bash
+bunx @arach/og viewer
+```
+
+Opens a local preview of every template with live renders. The package ships a prebuilt `og-render` binary for macOS — run `og version` to check versions, `og build` to rebuild from source.
 
 ## Why not Puppeteer?
 
-Most OG tools pull in a headless browser — Puppeteer, Playwright, or a bundled Chromium — plus font files as npm dependencies to get typography right.
+Most OG tools pull in a headless browser — Puppeteer, Playwright, or bundled Chromium — plus font files as npm dependencies to get typography right.
 
-`@arach/og` takes a different path: templates are plain HTML, fonts load from Google Fonts or CDN at render time, and a small native renderer (`og-render`) snapshots them through macOS WebKit. No Puppeteer or Chromium in npm — but you do build and run our mini browser once on macOS.
+`@arach/og` takes a different path: templates are plain HTML, fonts load from Google Fonts or CDN at render time, and `og-render` snapshots them through macOS WebKit. No browser download in npm — just a small native CLI that uses the WebKit already on your Mac.
 
 | | Puppeteer / Playwright | `@arach/og` |
 |---|---|---|
@@ -20,13 +45,13 @@ Most OG tools pull in a headless browser — Puppeteer, Playwright, or a bundled
 
 ```bash
 bun add @arach/og
-og version   # check @arach/og + bundled og-render versions
-og build     # macOS — rebuild og-render (skipped if a bundled binary matches your arch)
+og version   # @arach/og + bundled og-render versions
+og build     # rebuild og-render from Swift source (optional)
 ```
 
-`og-render` ships as a **prebuilt binary** for your Mac arch (`native/og-render/bin/darwin-arm64/` or `darwin-x64/`), plus Swift source if you need to rebuild. It's a headless WKWebView snapshotter, not a Chromium download. PNG export uses the bundled binary by default; `og build` refreshes it from source.
+`og-render` ships as a **prebuilt binary** for your Mac arch (`native/og-render/bin/darwin-arm64/` or `darwin-x64/`), with Swift source if you need to rebuild. It's a headless WKWebView snapshotter — not a Chromium download.
 
-**Signed releases** (Developer ID + Apple notarization) are published on GitHub:
+**Signed releases** (Developer ID + Apple notarization) are on GitHub:
 
 ```bash
 # https://github.com/arach/og/releases — e.g. og-render-v0.3.0
@@ -60,8 +85,10 @@ await generateOG({
 ### CLI
 
 ```bash
-# Generate from a config file
-bunx @arach/og config.json
+bunx @arach/og config.json          # generate from JSON (single or batch)
+bunx @arach/og validate <url>       # check OG tags, image size, dimensions
+bunx @arach/og audit <url>          # audit a site via sitemap
+bunx @arach/og viewer               # local template preview
 ```
 
 Config file format:
@@ -80,27 +107,25 @@ Config file format:
 
 ## Templates
 
-### `branded`
-Full-featured template with logo, tag chip, and accent glow. Great for product landing pages.
+Four templates out of the box. [Preview them all →](https://og.arach.dev/viewer.html)
 
-![branded](examples/og-branded.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/arach/og/master/examples/og-branded.png" alt="branded template" width="360">
+  <img src="https://raw.githubusercontent.com/arach/og/master/examples/og-docs.png" alt="docs template" width="360">
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/arach/og/master/examples/og-minimal.png" alt="minimal template" width="360">
+  <img src="https://raw.githubusercontent.com/arach/og/master/examples/og-editor.png" alt="editor-dark template" width="360">
+</p>
 
-### `docs`
-Clean template for documentation pages with breadcrumb-style layout.
+| Template | Best for |
+|---|---|
+| `branded` | Product landing pages — logo, tag chip, accent glow |
+| `docs` | Documentation — breadcrumb-style layout |
+| `minimal` | Blog posts and articles — clean, centered |
+| `editor-dark` | Developer tools and code editors — dark theme |
 
-![docs](examples/og-docs.png)
-
-### `minimal`
-Simple centered layout. Works well for blog posts and articles.
-
-![minimal](examples/og-minimal.png)
-
-### `editor-dark`
-Dark theme template for developer tools and code editors.
-
-![editor-dark](examples/og-editor.png)
-
-## Configuration Options
+## Configuration
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -115,13 +140,11 @@ Dark theme template for developer tools and code editors.
 | `width` | `number` | `1200` | Width in pixels |
 | `height` | `number` | `630` | Height in pixels |
 | `scale` | `number` | `2` | Device scale factor (retina) |
-| `fonts` | `string[]` | `['Geist', 'Geist']` | Google Fonts spec or Geist (CDN) — loaded at render, no npm font packages |
+| `fonts` | `string[]` | `['Geist', 'Geist']` | Google Fonts or Geist (CDN) — loaded at render |
 | `logo` | `string` | - | Logo URL or base64 |
 | `tag` | `string` | - | Tag/chip text |
 
-## Batch Generation
-
-Generate multiple images at once:
+## Batch generation
 
 ```typescript
 import { generateOGBatch } from '@arach/og'
