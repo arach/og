@@ -21,7 +21,7 @@
     }
   },
   "bin": {
-    "og": "./dist/cli.js"
+    "og": "dist/cli.js"
   },
   "files": [
     "dist",

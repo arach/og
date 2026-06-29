@@ -1,5 +1,5 @@
 native/og-render/.build/
-dist/release/
+dist/release
 .review/
 examples/
 public/
